@@ -2,16 +2,24 @@
 
 import { MENU_ITEMS } from "@/constants/Board.constant";
 import { useAppSelector } from "@/hooks/redux.hook";
-import { currentMenu } from "@/redux/selectors/menu.selector";
+import { currentMenu } from "@/redux/menus/selectors/menu.selector";
 import { ChangeEvent } from "react";
+import { toolboxService } from "@/services/tool.service";
 
 const RangeSlider = () => {
   const currentMenuValue = useAppSelector(currentMenu);
   console.log("range slider tsx", currentMenuValue);
   const showRangeSlider =
     currentMenuValue === MENU_ITEMS.PENCIL || MENU_ITEMS.ERASER;
+  const { handleSliderValue } = toolboxService();
+  const {   brushSize } = useAppSelector(
+    (state) => state.toolbox[currentMenuValue] || {}
+  );
+  console.log(  brushSize);
   function handleBrushSize(e: ChangeEvent<HTMLInputElement>) {
-    console.log("brush size changed");
+    const sliderValue = e.target.value;
+    console.log(`slide value is ${sliderValue}`)
+    handleSliderValue(currentMenuValue, sliderValue);
   }
   return (
     <>
@@ -23,6 +31,7 @@ const RangeSlider = () => {
             min={1}
             max={10}
             step={1}
+            value={brushSize}
             onChange={handleBrushSize}
           />
         </div>

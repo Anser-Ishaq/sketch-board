@@ -1,6 +1,6 @@
 import { MENU_ITEMS } from "@/constants/Board.constant";
 import * as ActionTypes from "../actions/menu.types";
-import { ActiveMenuState } from "../types/menu.types";
+import { ActiveMenuState } from "../../types/interface";
 
 
 const initialState: ActiveMenuState = {

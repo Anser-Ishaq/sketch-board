@@ -11,20 +11,22 @@ import {
 import MenuServices from "@/services/menu.service";
 import { MENU_ITEMS } from "@/constants/Board.constant";
 import { useAppSelector } from "@/hooks/redux.hook";
-import { currentMenu } from "@/redux/selectors/menu.selector";
+import { currentMenu } from "@/redux/menus/selectors/menu.selector";
 import { getMenuIconClass } from "@/utils/MenuColors";
 
 const Menu = () => {
   const { handleActiveItem } = MenuServices();
   const currentMenuValue = useAppSelector(currentMenu);
+  console.log("color picker tsx", currentMenuValue);
+
 
   return (
     <div className="w-full flex justify-center items-center">
-      <div className="w-1/2	 bg-gray-500 mt-8 h-14 flex justify-center items-center border-solid hover:border-dotted border-slate-600	rounded-md	 ">
+      <div className="relative z-10 w-1/2	 bg-gray-500 mt-8 h-14 flex justify-center items-center border-solid hover:border-dotted border-slate-600	rounded-md	 ">
         <div className="flex justify-evenly p-1 w-full">
           <FontAwesomeIcon
             icon={faPencil}
-            className={`h-5 hover:cursor-pointer hover:text-neutral-800 ${getMenuIconClass(
+            className={`h-5 hover:cursor-pointer  hover:text-neutral-800 ${getMenuIconClass(
               currentMenuValue,
               MENU_ITEMS.PENCIL
             )} p-2 rounded`}
