@@ -2,7 +2,7 @@
 import { MENU_ITEMS } from "@/constants/Board.constant";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux.hook";
 import { currentMenu, actionMenu } from "@/redux/menus/selectors/menu.selector";
-import React, { useEffect, useLayoutEffect, useRef } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   actionItemClicked,
   activeItemClicked,
@@ -10,8 +10,14 @@ import {
 const Board = () => {
   const canvasRef: React.MutableRefObject<any> = useRef(null);
   const sholudDraw: React.MutableRefObject<boolean> = useRef(false);
+  const drawHistory: { current: (ImageData | undefined)[] } = { current: [] };
+  const [drawHistoryCanvas, setDrawHistoryCanvas] = useState<
+    (ImageData | undefined)[]
+  >([]);
+  const [historyPointerCanvas, setHistoryPointerCanvas] = useState<number>(0);
+
   const currentMenuValue = useAppSelector(currentMenu);
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
   console.log("color picker tsx", currentMenuValue);
   const currentActionMenu = useAppSelector(actionMenu);
   const { color, brushSize } = useAppSelector(
@@ -30,8 +36,32 @@ const Board = () => {
       anchorTag.href = URL;
       anchorTag.download = `sketch${brushSize}${Date.now()}.png`;
       anchorTag.click();
+    } else if (currentActionMenu === MENU_ITEMS.UNDO) {
+      if (historyPointerCanvas > 0) {
+        console.log("histort pointer anvas $$$$$$$$", historyPointerCanvas - 1);
+        const imageData = drawHistoryCanvas[historyPointerCanvas - 1];
+        console.log("drawHistoryCanvas", drawHistoryCanvas);
+        console.log("undo image data", imageData);
+        if (imageData instanceof ImageData) {
+          canvasContext?.putImageData(imageData, 0, 0);
+          setHistoryPointerCanvas((prevPointer) => prevPointer - 1);
+        } else {
+          console.error("Invalid imageData type or imageData is undefined");
+        }
+      }
+    } else if (currentActionMenu === MENU_ITEMS.REDO) {
+      if (historyPointerCanvas > 0) {
+        console.log("histort pointer anvas $$$$$$$$", historyPointerCanvas);
+        const imageData = drawHistoryCanvas[historyPointerCanvas + 1];
+        if (imageData instanceof ImageData) {
+          canvasContext?.putImageData(imageData, 0, 0);
+          setHistoryPointerCanvas((prevPointer) => prevPointer + 1);
+        } else {
+          console.error("Invalid imageData type or imageData is undefined");
+        }
+      }
     }
-    dispatch(actionItemClicked(null))
+    dispatch(actionItemClicked(null));
   }, [currentActionMenu, dispatch]);
 
   useEffect(() => {
@@ -79,6 +109,14 @@ const Board = () => {
     };
     const handleMouseUp = (e: any) => {
       sholudDraw.current = false;
+      const imageData = canvasContext?.getImageData(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+      );
+      setDrawHistoryCanvas((prevHistory) => [...prevHistory, imageData]);
+      setHistoryPointerCanvas((prevPointer) => prevPointer + 1);
     };
     canvas.addEventListener("mousedown", handleMouseDown);
     canvas.addEventListener("mousemove", handleMouseMove);
