@@ -1,17 +1,38 @@
 "use client";
-import { useAppSelector } from "@/hooks/redux.hook";
-import { currentMenu } from "@/redux/menus/selectors/menu.selector";
+import { MENU_ITEMS } from "@/constants/Board.constant";
+import { useAppDispatch, useAppSelector } from "@/hooks/redux.hook";
+import { currentMenu, actionMenu } from "@/redux/menus/selectors/menu.selector";
 import React, { useEffect, useLayoutEffect, useRef } from "react";
-
+import {
+  actionItemClicked,
+  activeItemClicked,
+} from "@/redux/menus/actions/menu.actions";
 const Board = () => {
   const canvasRef: React.MutableRefObject<any> = useRef(null);
   const sholudDraw: React.MutableRefObject<boolean> = useRef(false);
   const currentMenuValue = useAppSelector(currentMenu);
+  const dispatch = useAppDispatch()
   console.log("color picker tsx", currentMenuValue);
+  const currentActionMenu = useAppSelector(actionMenu);
   const { color, brushSize } = useAppSelector(
     (state) => state.toolbox[currentMenuValue] || {}
   );
   console.log(color, brushSize);
+
+  useEffect(() => {
+    if (!canvasRef.current) return;
+    const canvas = canvasRef.current as HTMLCanvasElement;
+    const canvasContext = canvas.getContext("2d");
+    if (currentActionMenu === MENU_ITEMS.DOWNLOAD) {
+      const URL = canvas.toDataURL();
+      console.log(URL);
+      const anchorTag = document.createElement("a");
+      anchorTag.href = URL;
+      anchorTag.download = `sketch${brushSize}${Date.now()}.png`;
+      anchorTag.click();
+    }
+    dispatch(actionItemClicked(null))
+  }, [currentActionMenu, dispatch]);
 
   useEffect(() => {
     if (!canvasRef.current) return;

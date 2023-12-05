@@ -8,9 +8,15 @@ const MenuServices = () => {
 
   const handleActiveItem = (itemName: string) => {
     dispatch(activeItemClicked(itemName));
-    console.log("item name", itemName);
+    console.log("active item name", itemName);
   };
-  return { handleActiveItem };
+
+  const handleActionItem = (itemName: string) => {
+    dispatch(actionItemClicked(itemName));
+    console.log("action item name", itemName);
+
+  };
+  return { handleActiveItem, handleActionItem };
 };
 
 export default MenuServices;

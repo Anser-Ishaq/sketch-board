@@ -15,7 +15,7 @@ import { currentMenu } from "@/redux/menus/selectors/menu.selector";
 import { getMenuIconClass } from "@/utils/MenuColors";
 
 const Menu = () => {
-  const { handleActiveItem } = MenuServices();
+  const { handleActiveItem,handleActionItem } = MenuServices();
   const currentMenuValue = useAppSelector(currentMenu);
   console.log("color picker tsx", currentMenuValue);
 
@@ -46,7 +46,7 @@ const Menu = () => {
               currentMenuValue,
               MENU_ITEMS.UNDO
             )} p-2 rounded`}
-            onClick={() => handleActiveItem(MENU_ITEMS.UNDO)}
+            onClick={() => handleActionItem(MENU_ITEMS.UNDO)}
           />
           <FontAwesomeIcon
             icon={faRotateRight}
@@ -54,7 +54,7 @@ const Menu = () => {
               currentMenuValue,
               MENU_ITEMS.REDO
             )} p-2 rounded`}
-            onClick={() => handleActiveItem(MENU_ITEMS.REDO)}
+            onClick={() => handleActionItem(MENU_ITEMS.REDO)}
           />
           <FontAwesomeIcon
             icon={faFileArrowDown}
@@ -62,7 +62,7 @@ const Menu = () => {
               currentMenuValue,
               MENU_ITEMS.DOWNLOAD
             )} p-2 rounded`}
-            onClick={() => handleActiveItem(MENU_ITEMS.DOWNLOAD)}
+            onClick={() => handleActionItem(MENU_ITEMS.DOWNLOAD)}
           />
         </div>
       </div>

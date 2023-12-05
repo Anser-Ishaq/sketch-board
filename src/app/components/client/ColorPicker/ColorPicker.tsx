@@ -18,7 +18,7 @@ const ColorPicker = () => {
           <br />
           <div
             onClick={() => handleToolboxColor(currentMenuValue, COLORS.WHITE)}
-            className="bg-white h-5 w-5 rounded hover:rounded-lg cursor-pointer"
+            className="bg-white h-5 w-5   rounded hover:rounded-lg cursor-pointer"
           ></div>
           <div
             onClick={() => handleToolboxColor(currentMenuValue, COLORS.BLACK)}
