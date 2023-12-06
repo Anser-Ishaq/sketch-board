@@ -7,10 +7,10 @@ import {
   actionItemClicked,
   activeItemClicked,
 } from "@/redux/menus/actions/menu.actions";
+
 const Board = () => {
   const canvasRef: React.MutableRefObject<any> = useRef(null);
   const sholudDraw: React.MutableRefObject<boolean> = useRef(false);
-  const drawHistory: { current: (ImageData | undefined)[] } = { current: [] };
   const [drawHistoryCanvas, setDrawHistoryCanvas] = useState<
     (ImageData | undefined)[]
   >([]);
@@ -25,41 +25,69 @@ const Board = () => {
   );
   console.log(color, brushSize);
 
+  const handelDownload = (canvas: HTMLCanvasElement) => {
+    const URL = canvas.toDataURL();
+    console.log(URL);
+    const anchorTag = document.createElement("a");
+    anchorTag.href = URL;
+    anchorTag.download = `sketch${Date.now()}.png`;
+    anchorTag.click();
+  };
+
+  const  handleUndo = (canvasContext: CanvasRenderingContext2D | null) => {
+    if (historyPointerCanvas > 0) {
+      console.log("histort pointer anvas $$$$$$$$", historyPointerCanvas - 1);
+      const imageData = drawHistoryCanvas[historyPointerCanvas - 1];
+      console.log("drawHistoryCanvas", drawHistoryCanvas);
+      console.log("undo image data", imageData);
+      if (imageData instanceof ImageData) {
+        canvasContext?.putImageData(imageData, 0, 0);
+        setHistoryPointerCanvas((prevPointer) => prevPointer - 1);
+      } else {
+        console.error("Invalid imageData type or imageData is undefined");
+      }
+    }
+  };
+
+  const handleRedo = (canvasContext: CanvasRenderingContext2D | null) => {
+    if (historyPointerCanvas > 0) {
+      console.log("histort pointer anvas $$$$$$$$", historyPointerCanvas);
+      const imageData = drawHistoryCanvas[historyPointerCanvas + 1];
+      if (imageData instanceof ImageData) {
+        canvasContext?.putImageData(imageData, 0, 0);
+        setHistoryPointerCanvas((prevPointer) => prevPointer + 1);
+      } else {
+        console.error("Invalid imageData type or imageData is undefined");
+      }
+    }
+  };
+
+  const changeConfig = (
+    color: string | CanvasGradient | CanvasPattern | undefined,
+    brushSize: number | undefined,
+    canvasContext: CanvasRenderingContext2D | null
+  ) => {
+    if (canvasContext) {
+      if (color) {
+        canvasContext.strokeStyle = color;
+      }
+
+      if (brushSize !== undefined) {
+        canvasContext.lineWidth = brushSize;
+      }
+    }
+  };
+
   useEffect(() => {
     if (!canvasRef.current) return;
     const canvas = canvasRef.current as HTMLCanvasElement;
     const canvasContext = canvas.getContext("2d");
     if (currentActionMenu === MENU_ITEMS.DOWNLOAD) {
-      const URL = canvas.toDataURL();
-      console.log(URL);
-      const anchorTag = document.createElement("a");
-      anchorTag.href = URL;
-      anchorTag.download = `sketch${brushSize}${Date.now()}.png`;
-      anchorTag.click();
+      handelDownload(canvas);
     } else if (currentActionMenu === MENU_ITEMS.UNDO) {
-      if (historyPointerCanvas > 0) {
-        console.log("histort pointer anvas $$$$$$$$", historyPointerCanvas - 1);
-        const imageData = drawHistoryCanvas[historyPointerCanvas - 1];
-        console.log("drawHistoryCanvas", drawHistoryCanvas);
-        console.log("undo image data", imageData);
-        if (imageData instanceof ImageData) {
-          canvasContext?.putImageData(imageData, 0, 0);
-          setHistoryPointerCanvas((prevPointer) => prevPointer - 1);
-        } else {
-          console.error("Invalid imageData type or imageData is undefined");
-        }
-      }
+      handleUndo(canvasContext);
     } else if (currentActionMenu === MENU_ITEMS.REDO) {
-      if (historyPointerCanvas > 0) {
-        console.log("histort pointer anvas $$$$$$$$", historyPointerCanvas);
-        const imageData = drawHistoryCanvas[historyPointerCanvas + 1];
-        if (imageData instanceof ImageData) {
-          canvasContext?.putImageData(imageData, 0, 0);
-          setHistoryPointerCanvas((prevPointer) => prevPointer + 1);
-        } else {
-          console.error("Invalid imageData type or imageData is undefined");
-        }
-      }
+      handleRedo(canvasContext);
     }
     dispatch(actionItemClicked(null));
   }, [currentActionMenu, dispatch]);
@@ -68,19 +96,8 @@ const Board = () => {
     if (!canvasRef.current) return;
     const canvas = canvasRef.current as HTMLCanvasElement;
     const canvasContext = canvas.getContext("2d");
-    const changeConfig = () => {
-      if (canvasContext) {
-        if (color) {
-          canvasContext.strokeStyle = color;
-        }
-
-        if (brushSize !== undefined) {
-          canvasContext.lineWidth = brushSize;
-        }
-      }
-    };
-
-    changeConfig();
+    changeConfig(color, brushSize, canvasContext);
+    return () => {};
   }, [color, brushSize]);
 
   useLayoutEffect(() => {
@@ -90,24 +107,25 @@ const Board = () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    const beginPath = (x: number, y: number) => {
+    const beginPath = (x: number, y: number): void => {
       canvasContext?.beginPath();
       canvasContext?.moveTo(x, y);
     };
 
-    const drawLine = (x: number, y: number) => {
+    const drawLine = (x: number, y: number): void => {
       canvasContext?.lineTo(x, y);
       canvasContext?.stroke();
     };
-    const handleMouseDown = (e: any) => {
+
+    const handleMouseDown = (e: MouseEvent) => {
       sholudDraw.current = true;
       beginPath(e.clientX, e.clientY);
     };
-    const handleMouseMove = (e: any) => {
+    const handleMouseMove = (e: MouseEvent) => {
       if (!sholudDraw.current) return;
       drawLine(e.clientX, e.clientY);
     };
-    const handleMouseUp = (e: any) => {
+    const handleMouseUp = (e: MouseEvent) => {
       sholudDraw.current = false;
       const imageData = canvasContext?.getImageData(
         0,
@@ -118,9 +136,11 @@ const Board = () => {
       setDrawHistoryCanvas((prevHistory) => [...prevHistory, imageData]);
       setHistoryPointerCanvas((prevPointer) => prevPointer + 1);
     };
+
     canvas.addEventListener("mousedown", handleMouseDown);
     canvas.addEventListener("mousemove", handleMouseMove);
     canvas.addEventListener("mouseup", handleMouseUp);
+
     return () => {
       canvas.removeEventListener("mousedown", handleMouseDown);
       canvas.removeEventListener("mousemove", handleMouseMove);
