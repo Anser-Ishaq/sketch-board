@@ -1,6 +1,6 @@
 "use client";
 import { MENU_ITEMS } from "@/constants/Board.constant";
-import { useAppDispatch, useAppSelector } from "@/hooks/redux.hook";
+import { UseAppDispatch, UseAppSelector } from "@/hooks/redux.hook";
 import { currentMenu, actionMenu } from "@/redux/menus/selectors/menu.selector";
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
@@ -16,11 +16,11 @@ const Board = () => {
   >([]);
   const [historyPointerCanvas, setHistoryPointerCanvas] = useState<number>(0);
 
-  const currentMenuValue = useAppSelector(currentMenu);
-  const dispatch = useAppDispatch();
+  const currentMenuValue = UseAppSelector(currentMenu);
+  const dispatch = UseAppDispatch();
   console.log("color picker tsx", currentMenuValue);
-  const currentActionMenu = useAppSelector(actionMenu);
-  const { color, brushSize } = useAppSelector(
+  const currentActionMenu = UseAppSelector(actionMenu);
+  const { color, brushSize } = UseAppSelector(
     (state) => state.toolbox[currentMenuValue] || {}
   );
   console.log(color, brushSize);

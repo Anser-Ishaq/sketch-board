@@ -1,11 +1,11 @@
 "use client";
 import { COLORS, MENU_ITEMS } from "@/constants/Board.constant";
-import { useAppSelector } from "@/hooks/redux.hook";
+import { UseAppSelector } from "@/hooks/redux.hook";
 import { currentMenu } from "@/redux/menus/selectors/menu.selector";
 import { toolboxService } from "@/services/tool.service";
 import React from "react";
 const ColorPicker = () => {
-  const currentMenuValue = useAppSelector(currentMenu);
+  const currentMenuValue = UseAppSelector(currentMenu);
   console.log("color picker tsx", currentMenuValue);
   const showColorPicker = currentMenuValue === MENU_ITEMS.PENCIL;
   const { handleToolboxColor } = toolboxService();

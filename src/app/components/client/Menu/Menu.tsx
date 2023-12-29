@@ -10,13 +10,13 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import MenuServices from "@/services/menu.service";
 import { MENU_ITEMS } from "@/constants/Board.constant";
-import { useAppSelector } from "@/hooks/redux.hook";
+import { UseAppSelector } from "@/hooks/redux.hook";
 import { currentMenu } from "@/redux/menus/selectors/menu.selector";
 import { getMenuIconClass } from "@/utils/MenuColors";
 
 const Menu = () => {
   const { handleActiveItem,handleActionItem } = MenuServices();
-  const currentMenuValue = useAppSelector(currentMenu);
+  const currentMenuValue = UseAppSelector(currentMenu);
   console.log("color picker tsx", currentMenuValue);
 
 

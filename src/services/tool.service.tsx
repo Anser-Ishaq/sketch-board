@@ -1,10 +1,10 @@
-import { useAppDispatch } from "@/hooks/redux.hook";
+import { UseAppDispatch } from "@/hooks/redux.hook";
 import {
   toolboxActiveColor,
   currentSliderValue,
 } from "@/redux/toolbox/actions/tool.actions";
 export const toolboxService = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = UseAppDispatch();
 
   const handleToolboxColor = (item: string, color: string) => {
     dispatch(toolboxActiveColor(item, color));

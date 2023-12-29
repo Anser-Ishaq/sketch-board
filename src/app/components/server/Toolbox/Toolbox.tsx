@@ -1,7 +1,7 @@
 import React from "react";
 import RangeSlider from "../../client/RangeSlider/RangeSlider";
 import ColorPicker from "../../client/ColorPicker/ColorPicker";
-import { useAppSelector } from "@/hooks/redux.hook";
+import { UseAppSelector } from "@/hooks/redux.hook";
 import { currentMenu } from "@/redux/menus/selectors/menu.selector";
  
 const Toolbox = () => {

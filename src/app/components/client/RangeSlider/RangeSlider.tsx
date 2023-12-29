@@ -1,18 +1,18 @@
 "use client";
 
 import { MENU_ITEMS } from "@/constants/Board.constant";
-import { useAppSelector } from "@/hooks/redux.hook";
+import { UseAppSelector } from "@/hooks/redux.hook";
 import { currentMenu } from "@/redux/menus/selectors/menu.selector";
 import { ChangeEvent } from "react";
 import { toolboxService } from "@/services/tool.service";
 
 const RangeSlider = () => {
-  const currentMenuValue = useAppSelector(currentMenu);
+  const currentMenuValue = UseAppSelector(currentMenu);
   console.log("range slider tsx", currentMenuValue);
   const showRangeSlider =
     currentMenuValue === MENU_ITEMS.PENCIL || MENU_ITEMS.ERASER;
   const { handleSliderValue } = toolboxService();
-  const {   brushSize } = useAppSelector(
+  const {   brushSize } = UseAppSelector(
     (state) => state.toolbox[currentMenuValue] || {}
   );
   console.log(  brushSize);

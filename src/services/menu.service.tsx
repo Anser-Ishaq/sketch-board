@@ -2,9 +2,9 @@ import {
   actionItemClicked,
   activeItemClicked,
 } from "@/redux/menus/actions/menu.actions";
-import { useAppDispatch } from "@/hooks/redux.hook";
+import { UseAppDispatch } from "@/hooks/redux.hook";
 const MenuServices = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = UseAppDispatch();
 
   const handleActiveItem = (itemName: string) => {
     dispatch(activeItemClicked(itemName));
